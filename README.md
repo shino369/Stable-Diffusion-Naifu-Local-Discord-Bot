@@ -1,0 +1,2 @@
+# NAI discord bot
+ 
