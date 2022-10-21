@@ -1,0 +1,20 @@
+{
+  "name": "NAI-discord-bot",
+  "version": "1.0.0",
+  "description": "novelAI discord bot with local environment",
+  "main": "src/index.ts",
+  "author": "Anthony Wong <nakagame02@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "eslint": "^8.25.0",
+    "moment": "^2.29.4",
+    "node-fetch": "^3.2.10",
+    "sse.js": "github:NovelAI/sse.js#es-module-export",
+    "ts-node": "^10.9.1"
+  }
+}

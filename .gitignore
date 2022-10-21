@@ -6,3 +6,6 @@ yarn-error.log
 # Lock
 yarn.lock
 package-lock.json
+config.js
+config.json
+src/environment.js
