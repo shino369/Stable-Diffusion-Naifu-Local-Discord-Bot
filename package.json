@@ -7,7 +7,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "add-slash": "node ./src/deploy.js"
   },
   "dependencies": {
     "discord.js": "^14.6.0",
