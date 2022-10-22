@@ -1,4 +1,4 @@
-# Stable Diffusion Naifu Discord Bot
+# Stable Diffusion Local Discord Bot
  
 Simple discord bot to connect your local Naifu environemnt (using your own GPU).\
 Originally designed for single user, and request is performed one by one (each time 1 image only).\
@@ -20,7 +20,7 @@ Exactly the same as Naifu or NovelAI.\
 ## How To Run
 
 Run `yarn start` or `npm start` to run the bot.\
-The base url is default set to `http://localhost:6969` for connecting naifu. Change the port to your local port.\
+The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port.\
 You should also start the stable diffusion backend program in your local environment.\
 \
 <img src="./src/asset/image.jpg" alt="drawing" width="400"/>\
