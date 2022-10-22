@@ -23,6 +23,7 @@ Exactly the same as Naifu or NovelAI.\
 Run `yarn start` or `npm start` to run the bot.\
 The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port if needed.\
 You should also start the stable diffusion backend program in your local environment.\
+Please also add a file environment.js or directly edit corresponding files to provide your own discord id and token.\
 \
 <img src="./src/asset/image.jpg" alt="drawing" width="400"/>\
 <img src="./src/asset/image2.jpg" alt="drawing" width="400"/>
