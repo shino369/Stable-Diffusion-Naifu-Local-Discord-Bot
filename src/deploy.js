@@ -12,13 +12,15 @@ const commands = [
     options: [
       {
         name: 'positive',
-        description: 'Positive prompt. Default added will: masterpiece, best quality',
+        description:
+          'Positive prompt. Default added will: masterpiece, best quality',
         type: 3,
         max_length: 800,
       },
       {
         name: 'negative',
-        description: 'Negative prompt. Default applied some prompt to filter bad result.',
+        description:
+          'Negative prompt. Default applied some prompt to filter bad result.',
         type: 3,
         max_length: 800,
       },
@@ -29,21 +31,24 @@ const commands = [
       },
       {
         name: 'strength',
-        description: 'img2img option: Control how much the image will change. Default 0.7',
+        description:
+          'img2img option: Control how much the image will change. Default 0.7',
         type: 10,
         min_value: 0.1,
         max_value: 0.99,
       },
       {
         name: 'noise',
-        description: 'img2img option: Control how much detail will be added. Default 0.2',
+        description:
+          'img2img option: Control how much detail will be added. Default 0.2',
         type: 10,
         min_value: 0.1,
         max_value: 0.99,
       },
       {
         name: 'step',
-        description: 'Number of iteration to refine image. Default 28 for text2img. Default 50 for img2img',
+        description:
+          'Number of iteration to refine image. Default 28 for text2img. Default 50 for img2img',
         type: 10,
         min_value: 1,
         max_value: 50,
@@ -95,8 +100,15 @@ const commands = [
         type: 3,
       },
       {
+        name: 'number',
+        description: 'Number per generation',
+        type: 10,
+        max_value: 9,
+      },
+      {
         name: 'save_setting',
-        description: 'Save setting to slot 1-5. Will save prompt, orientation and size',
+        description:
+          'Save setting to slot 1-5. Will save prompt, orientation and size',
         choices: [
           {
             name: 'slot 1',

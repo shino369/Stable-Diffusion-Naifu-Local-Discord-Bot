@@ -81,7 +81,7 @@ function main() {
             break
           case 'prompt':
             console.log('Prompt received')
-            const newDate = moment().format('YY-MM-DD-hh-mm-ss')
+            let newDate = moment().format('YY-MM-DD-hh-mm-ss')
             console.log(
               '=================================getting input========================================',
             )
@@ -104,6 +104,7 @@ function main() {
             const fileAttachment = interaction.options.getAttachment('img2img')
             const saveSetting = interaction.options.getNumber('save_setting')
             const getSetting = interaction.options.getNumber('get_setting')
+            const sampleNumber = interaction.options.getNumber('number')
             let img2imgOptions = {}
             console.log(options)
 
@@ -229,7 +230,7 @@ function main() {
               sampler: 'k_euler_ancestral',
               steps: config.default.steps,
               seed: Math.floor(Math.random() * 2 ** 32 - 1),
-              n_samples: 1,
+              n_samples: sampleNumber || 1,
               ucPreset: 0,
               uc: options.negativePrompt,
               ...img2imgOptions,
@@ -252,21 +253,52 @@ function main() {
 
             res.text().then(data => {
               const str = data.toString()
-              const index = str.indexOf('data:')
-              const newStr = str.substring(index + 5)
-              const imgBuff = new Buffer.from(newStr, 'base64')
 
-              const file = new AttachmentBuilder(imgBuff, {
-                name: `${newDate}.png`,
-              })
-              const exampleEmbed = new EmbedBuilder()
-                .setTitle(newDate)
-                .setImage('attachment://discordjs.png')
+              const splitArr = str.split('event: newImage')
+
+              let fileArr = []
+              // let embedArr = []
+              splitArr
+                .map(arr => arr.trim())
+                .forEach(img => {
+                  if (img.length > 0) {
+                    const index = img.indexOf('data:')
+                    const newStr = img.substring(index + 5)
+                    const imgBuff = new Buffer.from(newStr, 'base64')
+                    newDate = moment().format('YY-MM-DD-hh-mm-ss')
+                    const ran = Math.random() * 10
+                    const file = new AttachmentBuilder(imgBuff, {
+                      name: `${newDate + ran}.png`,
+                    })
+                    // const exampleEmbed = new EmbedBuilder()
+                    //   .setTitle(newDate + ran)
+                    //   .setImage('attachment://discordjs.png')
+                    // const exampleEmbed = new EmbedBuilder()
+                    //   .setTitle(newDate)
+                    //   .setImage('attachment://discordjs.png')
+                    fileArr.push(file)
+                    // embedArr.push(exampleEmbed)
+                  }
+                })
+
+              // const index = str.indexOf('data:')
+              // const newStr = str.substring(index + 5)
+              // const imgBuff = new Buffer.from(newStr, 'base64')
+
+              // const file = new AttachmentBuilder(imgBuff, {
+              //   name: `${newDate}.png`,
+              // })
+              // const exampleEmbed = new EmbedBuilder()
+              //   .setTitle(newDate)
+              //   .setImage('attachment://discordjs.png')
 
               console.log(
                 '======================================sending image==========================================',
               )
-              interaction.editReply({ embeds: [exampleEmbed], files: [file] })
+              interaction.editReply({
+                // embeds: [...embedArr],
+                files: [...fileArr],
+              })
             })
             //   // If you want to save to local
 
