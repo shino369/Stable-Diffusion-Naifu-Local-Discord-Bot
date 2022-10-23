@@ -19,7 +19,7 @@ Exactly the same as Naifu or NovelAI.\
 
 
 ## How To Run
-
+Run `yarn add-slash` or `npm add-slash` to deploy slash command.\
 Run `yarn start` or `npm start` to run the bot.\
 The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port if needed.\
 You should also start the stable diffusion backend program in your local environment.\
