@@ -11,34 +11,12 @@ import fs from 'fs'
 import moment from 'moment'
 import dotenv from 'dotenv'
 import { Img2imgOptions, Options, Orientation, SavedSetting, Size } from 'types'
-import { getJsonFileFromPath } from 'utils/fileIO'
-import { config } from 'constant/config'
+import { getJsonFileFromPath } from 'utils'
+import { config } from 'constant'
 
 dotenv.config()
 
 let savedSetting: SavedSetting = { updatedAt: '', data: {} }
-
-// async function readSavedSetting() {
-//   try {
-//     // for saving setting
-//     if (fs.existsSync('saved_setting.json')) {
-//       fs.promises
-//         .readFile('saved_setting.json')
-//         .then(json => {
-//           savedSetting = JSON.parse(json.toString())
-//         })
-//     } else {
-//       fs.writeFile(
-//         'saved_setting.json',
-//         JSON.stringify({ updatedAt: '', data: {} }),
-//         err => console.log(err),
-//       )
-//     }
-//   } catch (e) {
-//     console.log(e)
-//     console.log('Error: error when getting saved setting')
-//   }
-// }
 
 async function discordBot() {
   savedSetting = await getJsonFileFromPath('saved_setting.json')
