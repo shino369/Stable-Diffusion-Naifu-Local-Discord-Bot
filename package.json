@@ -5,17 +5,20 @@
   "main": "src/index.ts",
   "author": "Anthony Wong <nakagame02@gmail.com>",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "start": "node ./src/index.js",
     "add-slash": "node ./src/deploy.js"
   },
   "dependencies": {
+    "@types/node": "^18.11.4",
     "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
     "eslint": "^8.25.0",
     "moment": "^2.29.4",
     "node-fetch": "^3.2.10",
-    "sse.js": "github:NovelAI/sse.js#es-module-export",
     "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
   }
 }

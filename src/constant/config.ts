@@ -1,4 +1,6 @@
-export const config = {
+import { Config } from "type";
+
+export const config:Config = {
   baseUrl: 'http://localhost:6969',
   sizeMapper: {
     portrait: {

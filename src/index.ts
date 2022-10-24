@@ -4,35 +4,44 @@ import {
   Events,
   Partials,
   AttachmentBuilder,
-  EmbedBuilder,
+  // EmbedBuilder,
 } from 'discord.js'
 import fetch from 'node-fetch'
 import fs from 'fs'
-import moment from 'moment/moment.js'
-import { config } from './config.js'
-import { environment } from './environment.js'
+import moment from 'moment'
+import dotenv from 'dotenv'
+import { Img2imgOptions, Options, Orientation, SavedSetting, Size } from 'type'
+import { getJsonFileFromPath } from 'utils/fileIO'
+import { config } from 'constant/config'
 
-let savedSetting = {}
+dotenv.config()
 
-const readSavedSetting = async () => {
-  // for saving setting
-  if (fs.existsSync('saved_setting.json')) {
-    fs.promises
-      .readFile('saved_setting.json', err => console.log(err))
-      .then(json => {
-        savedSetting = JSON.parse(json)
-      })
-  } else {
-    fs.writeFile(
-      'saved_setting.json',
-      JSON.stringify({ updatedAt: '', data: {} }),
-      err => console.log(err),
-    )
-  }
-}
+let savedSetting: SavedSetting = { updatedAt: '', data: {} }
 
-function main() {
-  readSavedSetting()
+// async function readSavedSetting() {
+//   try {
+//     // for saving setting
+//     if (fs.existsSync('saved_setting.json')) {
+//       fs.promises
+//         .readFile('saved_setting.json')
+//         .then(json => {
+//           savedSetting = JSON.parse(json.toString())
+//         })
+//     } else {
+//       fs.writeFile(
+//         'saved_setting.json',
+//         JSON.stringify({ updatedAt: '', data: {} }),
+//         err => console.log(err),
+//       )
+//     }
+//   } catch (e) {
+//     console.log(e)
+//     console.log('Error: error when getting saved setting')
+//   }
+// }
+
+async function discordBot() {
+  savedSetting = await getJsonFileFromPath('saved_setting.json')
 
   const client = new Client({
     intents: [
@@ -58,7 +67,8 @@ function main() {
           `Hello ${message.author.username}! I'm a robot which generate illustration.`,
         )
       }
-    } catch (err) {
+    } catch (e) {
+      console.log(e)
       message.reply('Message Error: Internal error occured.')
     }
   })
@@ -86,7 +96,7 @@ function main() {
               '=================================getting input========================================',
             )
 
-            let options = {
+            let options: Options = {
               positivePrompt: interaction.options.getString('positive')
                 ? config.default.positive +
                   interaction.options.getString('positive')
@@ -95,17 +105,18 @@ function main() {
                 interaction.options.getString('negative') ||
                 config.default.negative,
               orientation:
-                interaction.options.getString('orientation') ||
+                (interaction.options.getString('orientation') as Orientation) ||
                 config.default.orientation,
               size:
-                interaction.options.getString('size') || config.default.size,
+                (interaction.options.getString('size') as Size) ||
+                config.default.size,
             }
 
             const fileAttachment = interaction.options.getAttachment('img2img')
             const saveSetting = interaction.options.getNumber('save_setting')
             const getSetting = interaction.options.getNumber('get_setting')
             const sampleNumber = interaction.options.getNumber('number')
-            let img2imgOptions = {}
+            let img2imgOptions: Img2imgOptions = {}
             console.log(options)
 
             if (saveSetting) {
@@ -121,9 +132,7 @@ function main() {
               fs.writeFile(
                 'saved_setting.json',
                 JSON.stringify(savedSetting),
-                function (err) {
-                  console.log(err)
-                },
+                err => console.log(err),
               )
               console.log('setting saved')
             }
@@ -156,8 +165,9 @@ function main() {
               })
 
               // recalculate WxH
-              let tempW = Math.floor(fileAttachment.width / 64) * 64
-              let tempH = Math.floor(fileAttachment.height / 64) * 64
+              let tempW = Math.floor((fileAttachment.width as number) / 64) * 64
+              let tempH =
+                Math.floor((fileAttachment.height as number) / 64) * 64
 
               if (tempH >= tempW) {
                 // portrait or square
@@ -256,7 +266,7 @@ function main() {
 
               const splitArr = str.split('event: newImage')
 
-              let fileArr = []
+              let fileArr: AttachmentBuilder[] = []
               // let embedArr = []
               splitArr
                 .map(arr => arr.trim())
@@ -264,7 +274,7 @@ function main() {
                   if (img.length > 0) {
                     const index = img.indexOf('data:')
                     const newStr = img.substring(index + 5)
-                    const imgBuff = new Buffer.from(newStr, 'base64')
+                    const imgBuff = Buffer.from(newStr, 'base64')
                     newDate = moment().format('YY-MM-DD-hh-mm-ss')
                     const ran = Math.random() * 10
                     const file = new AttachmentBuilder(imgBuff, {
@@ -325,7 +335,7 @@ function main() {
 
             break
         }
-      } catch (err) {
+      } catch (e) {
         interaction.reply('Interaction Error: Internal error occured.')
         return
       }
@@ -335,7 +345,7 @@ function main() {
     return
   })
 
-  client.login(environment.token)
+  client.login(process.env.TOKEN)
 }
 
-main()
+discordBot()

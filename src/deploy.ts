@@ -1,5 +1,4 @@
 import { REST, Routes } from 'discord.js'
-import { environment } from './environment.js'
 
 const commands = [
   {
@@ -164,13 +163,13 @@ const commands = [
   },
 ]
 
-const rest = new REST({ version: '10' }).setToken(environment.token)
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN as string)
 
 ;(async () => {
   try {
     console.log('Started refreshing application (/) commands.')
 
-    await rest.put(Routes.applicationCommands(environment.clientId), {
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID as string), {
       body: commands,
     })
 
