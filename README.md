@@ -7,7 +7,7 @@ Migrated to typescript for better error handling.\
 \
 Originally designed for single user, and request is performed one by one.\
 Cool down time 20s is added for prompt. To change it, set the value in config.ts.\
-Calling `/prompt` in discord will ask you to input your different options.\
+Calling ```/prompt``` in discord will ask you to input your different options.\
 Input options exactly the same as Naifu or NovelAI.\
 \
 `positive` : position prompt\
@@ -27,11 +27,11 @@ Input options exactly the same as Naifu or NovelAI.\
 For img2img, it will automatically apply a suitable W x H, and max is 1024 x 1024.
 
 ## How To Run
-Run `yarn add-slash` or `npm add-slash` to deploy slash command.\
-Run `yarn start` or `npm start` to run the bot.\
+Config your .env file.
+Run ```yarn start``` or ```npm run start``` to start.\
+The `deploy.ts` is non-used recently.\
 The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port if needed.\
 You should also start the stable diffusion backend program in your local environment.\
-Please also add a file environment.js or directly edit corresponding files to provide your own discord id and token.\
 \
 <img src="./src/asset/image.jpg" alt="drawing" width="800"/>\
 <img src="./src/asset/image2.jpg" alt="drawing" width="800"/>
