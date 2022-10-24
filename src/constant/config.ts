@@ -1,4 +1,4 @@
-import { Config } from "type";
+import { Config } from "types";
 
 export const config:Config = {
   baseUrl: 'http://localhost:6969',

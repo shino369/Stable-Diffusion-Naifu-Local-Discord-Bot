@@ -10,7 +10,7 @@ import fetch from 'node-fetch'
 import fs from 'fs'
 import moment from 'moment'
 import dotenv from 'dotenv'
-import { Img2imgOptions, Options, Orientation, SavedSetting, Size } from 'type'
+import { Img2imgOptions, Options, Orientation, SavedSetting, Size } from 'types'
 import { getJsonFileFromPath } from 'utils/fileIO'
 import { config } from 'constant/config'
 
