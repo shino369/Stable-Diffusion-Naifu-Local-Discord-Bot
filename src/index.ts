@@ -4,21 +4,23 @@ import {
   Events,
   Partials,
   AttachmentBuilder,
+  Collection,
   // EmbedBuilder,
 } from 'discord.js'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import moment from 'moment'
 import dotenv from 'dotenv'
-import { Img2imgOptions, Options, Orientation, SavedSetting, Size } from 'types'
+import { Command, Img2imgOptions, Options, Orientation, SavedSetting, Size, SlashCommand } from 'types'
 import { getJsonFileFromPath } from 'utils'
 import { config } from 'constant'
-
-dotenv.config()
+import { join } from 'path'
 
 let savedSetting: SavedSetting = { updatedAt: '', data: {} }
 
-async function discordBot() {
+
+async function discordBotInit() {
+  dotenv.config()
   savedSetting = await getJsonFileFromPath('saved_setting.json')
 
   const client = new Client({
@@ -30,6 +32,18 @@ async function discordBot() {
     ],
     partials: [Partials.Channel, Partials.Message],
   })
+
+  client.slashCommands = new Collection<string, SlashCommand>()
+  client.commands = new Collection<string, Command>()
+  client.cooldowns = new Collection<string, number>()
+
+  const handlersDir = join(__dirname, './handlers')
+  fs.readdirSync(handlersDir).forEach(async handler => {
+    const module =  await import(`${handlersDir}/${handler}`)
+    module(client)
+  })
+
+
 
   client.on(Events.ClientReady, () => {
     if (client.user) {
@@ -226,14 +240,17 @@ async function discordBot() {
 
             console.log(payload)
 
-            const res = await fetch(config.baseUrl + '/generate-stream', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+            const res = await fetch(
+              process.env.BASE_URL + config.generateImageURL,
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
               },
-              body: JSON.stringify(payload),
-            })
+            )
 
             console.log(
               '===============================waiting for image generation====================================',
@@ -259,26 +276,12 @@ async function discordBot() {
                       name: `${newDate + ran}.png`,
                     })
                     // const exampleEmbed = new EmbedBuilder()
-                    //   .setTitle(newDate + ran)
-                    //   .setImage('attachment://discordjs.png')
-                    // const exampleEmbed = new EmbedBuilder()
                     //   .setTitle(newDate)
                     //   .setImage('attachment://discordjs.png')
                     fileArr.push(file)
                     // embedArr.push(exampleEmbed)
                   }
                 })
-
-              // const index = str.indexOf('data:')
-              // const newStr = str.substring(index + 5)
-              // const imgBuff = new Buffer.from(newStr, 'base64')
-
-              // const file = new AttachmentBuilder(imgBuff, {
-              //   name: `${newDate}.png`,
-              // })
-              // const exampleEmbed = new EmbedBuilder()
-              //   .setTitle(newDate)
-              //   .setImage('attachment://discordjs.png')
 
               console.log(
                 '======================================sending image==========================================',
@@ -326,4 +329,4 @@ async function discordBot() {
   client.login(process.env.TOKEN)
 }
 
-discordBot()
+discordBotInit()

@@ -1,7 +1,7 @@
 import { Config } from "types";
 
 export const config:Config = {
-  baseUrl: 'http://localhost:6969',
+  generateImageURL: '/generate-stream',
   sizeMapper: {
     portrait: {
       medium: {
