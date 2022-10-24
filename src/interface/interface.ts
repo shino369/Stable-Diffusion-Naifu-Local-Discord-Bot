@@ -54,6 +54,7 @@ export interface Config {
     img2imgStep: number
     scale: number
   }
+  cooltime: number
 }
 
 export interface Img2imgOptions {

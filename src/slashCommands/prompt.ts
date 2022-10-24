@@ -295,7 +295,7 @@ const prompt: SlashCommand = {
       }
     }
   },
-  cooldown: 20,
+  cooldown: config.cooltime,
 }
 
 export default prompt

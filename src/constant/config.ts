@@ -58,4 +58,5 @@ export const config:Config = {
     img2imgStep: 50,
     scale: 12,
   },
+  cooltime: 20,
 }
