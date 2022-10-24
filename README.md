@@ -31,7 +31,7 @@ Config your .env file.
 Run ```yarn start``` or ```npm run start``` to start.\
 The `deploy.ts` is non-used recently.\
 The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port if needed.\
-You should also start the stable diffusion backend program in your local environment.\
+You should also start the naifu in your local environment.\
 \
 <img src="./src/asset/image.jpg" alt="drawing" width="800"/>\
 <img src="./src/asset/image2.jpg" alt="drawing" width="800"/>
