@@ -1,6 +1,6 @@
-import { pingConfig } from 'constant'
+import { pingConfig } from '../constant'
 import { EmbedBuilder } from 'discord.js'
-import { buildSlashCommand, getThemeColor } from 'utils/functions'
+import { buildSlashCommand, getThemeColor } from '../utils'
 import { SlashCommand } from '../types'
 
 const ping: SlashCommand = {
@@ -10,7 +10,7 @@ const ping: SlashCommand = {
       interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setAuthor({ name: 'MRC License' })
+            .setAuthor({ name: 'Ping Info' })
             .setDescription(
               `🏓 Pong! \n 📡 Ping: ${interaction.client.ws.ping}`,
             )

@@ -43,7 +43,7 @@ export const commands = [
         max_value: 0.99,
       },
       {
-        name: 'step',
+        name: 'steps',
         description:
           'Number of iteration to refine image. Default 28 for text2img. Default 50 for img2img',
         type: 10,

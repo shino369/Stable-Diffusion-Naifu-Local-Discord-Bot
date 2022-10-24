@@ -1,5 +1,5 @@
 import { Client } from 'discord.js'
-import { color } from 'utils/functions'
+import { color } from '../utils'
 import { BotEvent } from 'types'
 
 const event: BotEvent = {

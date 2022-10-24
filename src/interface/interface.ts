@@ -4,6 +4,7 @@ import {
   Collection,
   PermissionResolvable,
   Message,
+  ApplicationCommandOptionType,
 } from 'discord.js'
 
 export interface SavedSetting {
@@ -22,6 +23,10 @@ export interface Options {
   negativePrompt: string
   orientation: Orientation
   size: Size
+  scale: number
+  steps: number
+  strength?: number
+  noise?: number
 }
 
 export type Orientation = 'portrait' | 'landscape' | 'square'
@@ -60,7 +65,36 @@ export interface Img2imgOptions {
   height?: number
 }
 
+export interface Payload extends Img2imgOptions{
+  width: number
+  height: number
+  prompt: string
+  scale: number
+  sampler: string
+  seed: number
+  n_samples: number
+  ucPreset: number
+  uc: string
+}
 //====================discord js types=====================
+
+export interface SlashCommandType {
+  name: string
+  description: string
+  options?: SlashOption[]
+}
+
+interface SlashOption {
+  name: string
+  description: string
+  type: ApplicationCommandOptionType
+  max_length?: number
+  min_length?: number
+  min_value?: number
+  max_value?: number
+  choices?: { name: string; value: string | number }[] | Function
+  required?: boolean
+}
 
 export interface SlashCommand {
   command: SlashCommandBuilder | any
@@ -89,7 +123,7 @@ export interface BotEvent {
 
 export interface Client {
   slashCommands: Collection<string, SlashCommand>
-  commands: Collection<string, Command>,
+  commands: Collection<string, Command>
   cooldowns: Collection<string, number>
 }
 

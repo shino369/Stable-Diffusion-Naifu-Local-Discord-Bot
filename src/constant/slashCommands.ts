@@ -1,4 +1,7 @@
-export const promptConfig = {
+import { ApplicationCommandOptionType } from "discord.js"
+import { SlashCommandType } from "../types"
+
+export const promptConfig: SlashCommandType = {
   name: 'prompt',
   description: 'Input prompt for NAI',
   options: [
@@ -6,26 +9,35 @@ export const promptConfig = {
       name: 'positive',
       description:
         'Positive prompt. Default added will: masterpiece, best quality',
-      type: 3,
+      type: ApplicationCommandOptionType.String,
       max_length: 800,
     },
     {
       name: 'negative',
       description:
         'Negative prompt. Default applied some prompt to filter bad result.',
-      type: 3,
+      type: ApplicationCommandOptionType.String,
       max_length: 800,
+    },
+    {
+      name: 'number',
+      description: 'Number per generation',
+      type: ApplicationCommandOptionType.Number,
+      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => ({
+        name: `${num}`,
+        value: num,
+      })),
     },
     {
       name: 'img2img',
       description: 'img2img.',
-      type: 11,
+      type: ApplicationCommandOptionType.Attachment,
     },
     {
       name: 'strength',
       description:
         'img2img option: Control how much the image will change. Default 0.7',
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
       min_value: 0.1,
       max_value: 0.99,
     },
@@ -33,15 +45,15 @@ export const promptConfig = {
       name: 'noise',
       description:
         'img2img option: Control how much detail will be added. Default 0.2',
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
       min_value: 0.1,
       max_value: 0.99,
     },
     {
-      name: 'step',
+      name: 'steps',
       description:
         'Number of iteration to refine image. Default 28 for text2img. Default 50 for img2img',
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
       min_value: 1,
       max_value: 50,
     },
@@ -49,7 +61,7 @@ export const promptConfig = {
       name: 'scale',
       description:
         'Creativity scale. Higher closer to prompt, Lower more creative. Default 12',
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
       min_value: 1,
       max_value: 50,
     },
@@ -70,7 +82,7 @@ export const promptConfig = {
           value: 'square',
         },
       ],
-      type: 3,
+      type: ApplicationCommandOptionType.String,
     },
     {
       name: 'size',
@@ -89,13 +101,15 @@ export const promptConfig = {
           value: 'small',
         },
       ],
-      type: 3,
+      type: ApplicationCommandOptionType.String,
     },
     {
-      name: 'number',
-      description: 'Number per generation',
-      type: 10,
-      max_value: 9,
+      name: 'seed',
+      description:
+        'seed of image',
+      type: ApplicationCommandOptionType.Number,
+      min_value: 0,
+      max_value: 4294967295,
     },
     {
       name: 'save_setting',
@@ -123,7 +137,7 @@ export const promptConfig = {
           value: 5,
         },
       ],
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
     },
     {
       name: 'get_setting',
@@ -150,12 +164,12 @@ export const promptConfig = {
           value: 5,
         },
       ],
-      type: 10,
+      type: ApplicationCommandOptionType.Number,
     },
   ],
 }
 
-export const pingConfig = {
+export const pingConfig: SlashCommandType = {
   name: 'ping',
   description: 'Show ping',
 }

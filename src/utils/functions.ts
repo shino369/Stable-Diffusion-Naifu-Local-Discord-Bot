@@ -1,12 +1,14 @@
 import chalk from 'chalk'
-import { SlashCommandBuilder } from 'discord.js'
+import { ApplicationCommandOptionType, SlashCommandBuilder } from 'discord.js'
+import { SlashCommandType } from '../types'
 
-type colorType = 'text' | 'variable' | 'error'
+type colorType = 'text' | 'variable' | 'error' | 'operation'
 
 const themeColors = {
   text: '#ff8e4d',
   variable: '#ff624d',
   error: '#f5426c',
+  operation: '#088F8F'
 }
 
 export const getThemeColor = (color: colorType) =>
@@ -16,7 +18,7 @@ export const color = (color: colorType, message: any) => {
   return chalk.hex(themeColors[color])(message)
 }
 
-export const buildSlashCommand = (slashCommandObj: any) => {
+export const buildSlashCommand = (slashCommandObj: SlashCommandType) => {
   const slashCommand = new SlashCommandBuilder()
     .setName(slashCommandObj.name)
     .setDescription(slashCommandObj.description)
@@ -24,7 +26,7 @@ export const buildSlashCommand = (slashCommandObj: any) => {
   if (slashCommandObj.options && slashCommandObj.options.length > 0) {
     slashCommandObj.options.forEach((option: any) => {
       switch (option.type) {
-        case 3: // string
+        case ApplicationCommandOptionType.String: // string
           slashCommand.addStringOption(op => {
             op.setName(option.name).setDescription(option.description)
             if (option.max_length) {
@@ -37,30 +39,32 @@ export const buildSlashCommand = (slashCommandObj: any) => {
               op.setRequired(true)
             }
             if (option.choices && option.choices.length > 0) {
-              op.addChoices(option.choices)
+              op.addChoices(...option.choices)
             }
+
             return op
           })
           break
-        case 10: // number
+        case ApplicationCommandOptionType.Number: // number
           slashCommand.addNumberOption(op => {
             op.setName(option.name).setDescription(option.description)
             if (option.max_value) {
-              op.setMaxValue(option.max_length)
+              op.setMaxValue(option.max_value)
             }
             if (option.min_value) {
-              op.setMinValue(option.min_length)
+              op.setMinValue(option.min_value)
             }
             if (option.required) {
               op.setRequired(true)
             }
             if (option.choices && option.choices.length > 0) {
-              op.addChoices(option.choices)
+              op.addChoices(...option.choices)
             }
+
             return op
           })
           break
-        case 11: // attachment
+        case ApplicationCommandOptionType.Attachment: // attachment
           slashCommand.addAttachmentOption(op =>
             op.setName(option.name).setDescription(option.description),
           )
@@ -69,5 +73,6 @@ export const buildSlashCommand = (slashCommandObj: any) => {
     })
   }
 
+  // console.log(slashCommand)
   return slashCommand
 }
