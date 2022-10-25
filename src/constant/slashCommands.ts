@@ -23,7 +23,7 @@ export const promptConfig: SlashCommandType = {
       name: 'number',
       description: 'Number per generation',
       type: ApplicationCommandOptionType.Number,
-      choices: new Array(24).fill(1).map((_num, index) => ({
+      choices: new Array(10).fill(1).map((_num, index) => ({
         name: `${index + 1}`,
         value: index + 1,
       })),
