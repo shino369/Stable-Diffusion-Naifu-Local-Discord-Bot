@@ -23,9 +23,9 @@ export const promptConfig: SlashCommandType = {
       name: 'number',
       description: 'Number per generation',
       type: ApplicationCommandOptionType.Number,
-      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => ({
-        name: `${num}`,
-        value: num,
+      choices: new Array(24).fill(1).map((_num, index) => ({
+        name: `${index + 1}`,
+        value: index + 1,
       })),
     },
     {
@@ -114,55 +114,19 @@ export const promptConfig: SlashCommandType = {
       name: 'save_setting',
       description:
         'Save setting to slot 1-5. Will save prompt, orientation and size',
-      choices: [
-        {
-          name: 'slot 1',
-          value: 1,
-        },
-        {
-          name: 'slot 2',
-          value: 2,
-        },
-        {
-          name: 'slot 3',
-          value: 3,
-        },
-        {
-          name: 'slot 4',
-          value: 4,
-        },
-        {
-          name: 'slot 5',
-          value: 5,
-        },
-      ],
+      choices: new Array(10).fill(1).map((_num, index) => ({
+        name: `slot ${index + 1}`,
+        value: index + 1,
+      })),
       type: ApplicationCommandOptionType.Number,
     },
     {
       name: 'get_setting',
       description: 'Set setting from slot 1-5',
-      choices: [
-        {
-          name: 'slot 1',
-          value: 1,
-        },
-        {
-          name: 'slot 2',
-          value: 2,
-        },
-        {
-          name: 'slot 3',
-          value: 3,
-        },
-        {
-          name: 'slot 4',
-          value: 4,
-        },
-        {
-          name: 'slot 5',
-          value: 5,
-        },
-      ],
+      choices: new Array(10).fill(1).map((_num, index) => ({
+        name: `slot ${index + 1}`,
+        value: index + 1,
+      })),
       type: ApplicationCommandOptionType.Number,
     },
   ],
