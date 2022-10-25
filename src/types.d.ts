@@ -1,4 +1,4 @@
-export * from 'interface/index'
+export * from './interface/index'
 
 declare global {
   namespace NodeJS {
@@ -6,6 +6,10 @@ declare global {
       TOKEN: string
       CLIENT_ID: string
       BASE_URL: string
+      ROOTNAME: string
+      BUILD_ROOTNAME: string
+      EXT: string
+      BUILD_EXT: string
     }
   }
 }

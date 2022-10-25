@@ -1,12 +1,11 @@
 import { Client, Routes, SlashCommandBuilder } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import fs from 'fs'
-import { ROOTNAME } from '../index'
 import { SlashCommand } from '../types'
 import { color } from '../utils'
-import { commands } from '../constant'
+// import { commands } from '../constant'
 
-const deploy = (slashCommands:SlashCommandBuilder[]) => {
+const deploy = (slashCommands: SlashCommandBuilder[]) => {
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN)
   rest
     .put(Routes.applicationCommands(process.env.CLIENT_ID), {
@@ -32,36 +31,43 @@ const deploy = (slashCommands:SlashCommandBuilder[]) => {
 const Commands = (client: Client) => {
   const slashCommands: SlashCommandBuilder[] = []
   const CHILDNAME = '/slashCommands'
-  const handlersDir = ROOTNAME + CHILDNAME
-
+  const handlersDir =
+    process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}ROOTNAME`] +
+    CHILDNAME
   // let commandsDir = join(__dirname, '../commands')
+  const promiseArr: any = []
+  fs.readdirSync(handlersDir).forEach(file => {
+    if (
+      !file.endsWith(
+        process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}EXT`],
+      )
+    ) {
+      console.log(
+        process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}EXT`],
+      )
+      console.log(file)
+      return
+    }
 
-  fs.promises.readdir(handlersDir).then(async readdir => {
-    readdir.forEach(async file => {
-      if (!file.endsWith('.ts')) {
-        return
-      }
-      let command: SlashCommand = (await import(`..${CHILDNAME}/${file}`))
-        .default
-      slashCommands.push(command.command.toJSON())
-      client.slashCommands.set(command.command.name, command)
-      if(slashCommands.length === readdir.length) {
+    if (['prompt', 'ping'].find(f => file.includes(f))) {
+      // exclude file for testing
+      return
+    }
+    promiseArr.push(import(`..${CHILDNAME}/${file}`))
+
+    if (promiseArr.length > 0) {
+      Promise.all(promiseArr).then(res => {
+        res.forEach(module => {
+          let command: SlashCommand = module.default
+          slashCommands.push(command.command.toJSON())
+          console.log(slashCommands)
+          client.slashCommands.set(command.command.name, command)
+        })
+
         deploy(slashCommands)
-      }
-    })
+      })
+    }
   })
-
-  // readdirSync(commandsDir).forEach(async file => {
-  //   if (!file.endsWith('.ts')) {
-  //     console.log('not ts!!!')
-  //     return
-  //   }
-  //   let command: Command = await import(`${commandsDir}/${file}`)
-  //   commands.push(command)
-  //   client.commands.set(command.name, command)
-  // })
-
-
 }
 
 export default Commands

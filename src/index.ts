@@ -7,9 +7,7 @@ import {
 } from 'discord.js'
 import fs from 'fs'
 import dotenv from 'dotenv'
-import { Command, SavedSetting, SlashCommand } from './types'
-
-export const ROOTNAME = './src'
+import { Command, SlashCommand } from 'types'
 
 async function discordBotInit() {
   dotenv.config()
@@ -29,9 +27,11 @@ async function discordBotInit() {
   client.cooldowns = new Collection<string, number>()
 
   const CHILDNAME = '/handlers'
-  const handlersDir = ROOTNAME + CHILDNAME
+  const handlersDir = process.env[`${process.env.NODE_ENV ==='build' ? 'BUILD_' : ''}ROOTNAME`] + CHILDNAME
   fs.readdirSync(handlersDir).forEach(async handler => {
-    // console.log(`${handlersDir}/${handler}`)
+    if (!handler.endsWith(process.env[`${process.env.NODE_ENV==='build' ? 'BUILD_' : ''}EXT`])) {
+      return
+    }
     const module =  await import(`.${CHILDNAME}/${handler}`)
     module.default(client)
   })

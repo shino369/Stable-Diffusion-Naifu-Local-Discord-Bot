@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType } from "discord.js"
-import { SlashCommandType } from "../types"
+import { ApplicationCommandOptionType } from 'discord.js'
+import { SlashCommandType } from 'types'
 
 export const promptConfig: SlashCommandType = {
   name: 'prompt',
@@ -105,8 +105,7 @@ export const promptConfig: SlashCommandType = {
     },
     {
       name: 'seed',
-      description:
-        'seed of image',
+      description: 'seed of image',
       type: ApplicationCommandOptionType.Number,
       min_value: 0,
       max_value: 4294967295,
@@ -172,4 +171,23 @@ export const promptConfig: SlashCommandType = {
 export const pingConfig: SlashCommandType = {
   name: 'ping',
   description: 'Show ping',
+}
+
+export const nesConfig: SlashCommandType = {
+  name: 'nes',
+  description: 'Need',
+  options: [
+    {
+      name: 'extreme',
+      description: 'extreme',
+      type: ApplicationCommandOptionType.String,
+      choices: [
+        {
+          name: 'SEGS',
+          value: 'segs',
+        },
+        { name: 'SEX', value: 'sex' },
+      ],
+    },
+  ],
 }
