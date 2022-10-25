@@ -9,3 +9,5 @@ package-lock.json
 src/environment.js
 saved_setting.bak.json
 .env
+
+build/
