@@ -161,37 +161,53 @@ const prompt: SlashCommand = {
         }
       }
 
+      const embedMessage = {
+        // author: {
+        //   name: `Image Info`
+        // },
+        // URL: `https://localhost`,
+        name: `Image Info`,
+        description: `Prompt received.  ${
+          getSetting ? 'Using saved setting on slot ' + getSetting + '.' : ''
+        } ${fileAttachment ? 'Using img2img.' : ''} ${
+          saveSetting ? `Saved setting to slot ${saveSetting}.` : ''
+        }\nYour prompt is: \`\`\`${options.positivePrompt.replace(
+          config.default.positive,
+          '',
+        )} \`\`\` \nPlease wait for a moment...`,
+        color: 0xff9900,
+        fields: [
+          {
+            name: `config`,
+            value: `------------------------------------\n**Scale:** ${options.scale}　**Steps:** ${
+              options.steps
+            }　**Number:** ${sampleNumber || 1}${
+              fileAttachment
+                ? `　**Noise:** ${img2imgOptions.noise}　**Strength:** ${img2imgOptions.strength}`
+                : ''
+            }\n**Image Size:** ${
+              fileAttachment
+                ? img2imgOptions.width
+                : config.sizeMapper[options.orientation][options.size].width
+            }x${
+              fileAttachment
+                ? img2imgOptions.height
+                : config.sizeMapper[options.orientation][options.size].height
+            }　**Seed:** ${seed ? seed : randomSeed}\n------------------------------------\nPlease wait for a moment...`,
+          },
+        ],
+        footer: {
+          text: `©️SHINO369 | Need Extreme Segs`,
+        },
+      }
+
       if (settingExist) {
         interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setAuthor({ name: 'Image Info' })
-              .setDescription(
-                `Prompt received. ${
-                  getSetting ? 'Using of slot ' + getSetting + '.' : ''
-                }\nYour prompt is: ${options.positivePrompt.replace(config.default.positive, '')}${
-                  fileAttachment ? '\nUsing img2img' : ''
-                }\nWith scale ${options.scale} steps ${
-                  options.steps
-                }\nImage size: ${
-                  fileAttachment
-                    ? img2imgOptions.width
-                    : config.sizeMapper[options.orientation][options.size].width
-                }x${
-                  fileAttachment
-                    ? img2imgOptions.height
-                    : config.sizeMapper[options.orientation][options.size]
-                        .height
-                }\nNumber: ${sampleNumber || 1}\nSeed: ${
-                  seed ? seed : randomSeed
-                }\nPlease wait for a moment...`,
-              )
-              .setColor(getThemeColor('text')),
-          ],
+          embeds: [embedMessage],
         })
 
         console.log(color('operation', `......making payload`))
-        const payload:Payload = {
+        const payload: Payload = {
           prompt: options.positivePrompt,
           width: config.sizeMapper[options.orientation][options.size].width,
           height: config.sizeMapper[options.orientation][options.size].height,
@@ -205,12 +221,11 @@ const prompt: SlashCommand = {
           ...img2imgOptions,
         }
 
-        if(payload.image) {
+        if (payload.image) {
           console.log(_.omit(payload, ['image']))
         } else {
           console.log(payload)
         }
-        
 
         const res = await fetch(
           process.env.BASE_URL + config.generateImageURL,
@@ -234,7 +249,7 @@ const prompt: SlashCommand = {
           const splitArr = str.split('event: newImage')
 
           let fileArr: AttachmentBuilder[] = []
-          // let embedArr = []
+          // let embedArr: EmbedBuilder[] = []
           splitArr
             .map(arr => arr.trim())
             .forEach(img => {
@@ -250,14 +265,17 @@ const prompt: SlashCommand = {
                 // const exampleEmbed = new EmbedBuilder()
                 //   .setTitle(newDate)
                 //   .setImage('attachment://discordjs.png')
+                const newEmbed = new EmbedBuilder()
+                // .setTitle(`${newDate + ran}.png`)
+                // .setImage(`attachment://${newDate + ran}.png`) //.setURL(`https://localhost`);
                 fileArr.push(file)
-                // embedArr.push(exampleEmbed)
+                // embedArr.push(newEmbed)
               }
             })
 
           console.log(color('operation', `......sending image`))
           interaction.editReply({
-            // embeds: [...embedArr],
+            // embeds: [embedMessage, ...embedArr],
             files: [...fileArr],
           })
         })
