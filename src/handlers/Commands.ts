@@ -42,15 +42,12 @@ const Commands = (client: Client) => {
         process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}EXT`],
       )
     ) {
-      console.log(
-        process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}EXT`],
-      )
-      console.log(file)
       return
     }
 
-    if (['prompt', 'ping'].find(f => file.includes(f))) {
-      // exclude file for testing
+    // exclude files
+    const exclude:string[] = []
+    if (exclude.length > 0 && exclude.find(f => file.includes(f))) {
       return
     }
     promiseArr.push(import(`..${CHILDNAME}/${file}`))
@@ -60,7 +57,6 @@ const Commands = (client: Client) => {
         res.forEach(module => {
           let command: SlashCommand = module.default
           slashCommands.push(command.command.toJSON())
-          console.log(slashCommands)
           client.slashCommands.set(command.command.name, command)
         })
 

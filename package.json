@@ -8,12 +8,8 @@
   "license": "ISC",
   "baseUrl": "./",
   "scripts": {
-    "build": "tsc",
-    "start": "npx ts-node --experimental-specifier-resolution=node ./src/index.ts",
-    "nodemon-start": "nodemon --experimental-specifier-resolution=node ./src/index.ts",
-    "run-build-start": "NODE_ENV=build nodemon --experimental-specifier-resolution=node ./build/index.js",
-    "test": "set NODE_ENV=dev&& nodemon --experimental-specifier-resolution=node ./src/index.ts",
-    "test2": "set NODE_ENV=build&& nodemon --experimental-specifier-resolution=node ./build/index.js"
+    "build": "tsc && set NODE_ENV=build&& nodemon --experimental-specifier-resolution=node ./build/index.js",
+    "start": "set NODE_ENV=dev&& nodemon --experimental-specifier-resolution=node ./src/index.ts",
   },
   "dependencies": {
     "@discordjs/rest": "^1.1.0",
