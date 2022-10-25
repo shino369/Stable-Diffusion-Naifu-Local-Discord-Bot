@@ -27,7 +27,7 @@ Input options exactly the same as Naifu or NovelAI.\
 For img2img, it will automatically apply a suitable W x H, and max is 1024 x 1024.
 
 ## How To Run
-Config your .env file by changing `.env.bak` to `.env` and add `token/id`.
+Config your `.env` file by changing `.env.bak` to `.env` and add `token/id`.
 Run ```yarn start``` or ```npm run start``` to start.\
 The `deploy.ts` is non-used recently.\
 The base url is default set to `http://localhost:6969` for connecting `naifu`. Change the port to your local port if needed.\
