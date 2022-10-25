@@ -1,9 +1,8 @@
 import { Client, Routes, SlashCommandBuilder } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import fs from 'fs'
-import { SlashCommand } from '../types'
+import { SlashCommand } from 'types'
 import { color } from '../utils'
-// import { commands } from '../constant'
 
 const deploy = (slashCommands: SlashCommandBuilder[]) => {
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN)
@@ -34,7 +33,7 @@ const Commands = (client: Client) => {
   const handlersDir =
     process.env[`${process.env.NODE_ENV === 'build' ? 'BUILD_' : ''}ROOTNAME`] +
     CHILDNAME
-  // let commandsDir = join(__dirname, '../commands')
+
   const promiseArr: any = []
   fs.readdirSync(handlersDir).forEach(file => {
     if (
@@ -46,24 +45,23 @@ const Commands = (client: Client) => {
     }
 
     // exclude files
-    const exclude:string[] = []
+    const exclude: string[] = []
     if (exclude.length > 0 && exclude.find(f => file.includes(f))) {
       return
     }
+
     promiseArr.push(import(`..${CHILDNAME}/${file}`))
-
-    if (promiseArr.length > 0) {
-      Promise.all(promiseArr).then(res => {
-        res.forEach(module => {
-          let command: SlashCommand = module.default
-          slashCommands.push(command.command.toJSON())
-          client.slashCommands.set(command.command.name, command)
-        })
-
-        deploy(slashCommands)
-      })
-    }
   })
+  if (promiseArr.length > 0) {
+    Promise.all(promiseArr).then(res => {
+      res.forEach(module => {
+        let command: SlashCommand = module.default
+        slashCommands.push(command.command.toJSON())
+        client.slashCommands.set(command.command.name, command)
+      })
+      deploy(slashCommands)
+    })
+  }
 }
 
 export default Commands
