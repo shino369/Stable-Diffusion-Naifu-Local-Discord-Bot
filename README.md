@@ -10,22 +10,24 @@ Cool down time 20s is added for prompt. To change it, set the value in config.ts
 Calling ```/prompt``` in discord will ask you to input your different options.\
 Input options exactly the same as Naifu or NovelAI.\
 \
-`positive` : position prompt\
-`negative` : negative prompt\
-`number` : number of image per generation. max 9\
+`positive` : position prompt (max 800 characters)\
+`negative` : negative prompt (max 800 characters)\
+`number` : number of image per generation (max 10)\
 `img2img` : upload file for img2img\
 `orientation`: portrait | landscape | square\
 `size`: small | medium | large (please refer to config.js)\
 `scale`: cfg scale\
-`steps`: sampling steps\
-`strength`: img2img option\
-`noise`: img2img option\
+`steps`: sampling steps (max 50)\
+`strength`: img2img option (0.1 to 0.99)\
+`noise`: img2img option (0.1 to 0.99)\
 `seed` : seed\
-`save_setting`: alow to save positive prompt, negative prompt, orientation and size up to 5 slot\
+`save_setting`: alow to save positive prompt, negative prompt, orientation and size up to 10 slot\
 `get_setting`: get the setting saved to slot\
 
-For img2img, it will automatically apply a suitable W x H, and max is 1024 x 1024.
+For img2img, it will automatically apply a suitable W x H, and max is 1024 x 1024.\
 
+## Saving Slot
+Savable setting: `positive prompt, negative prompt (will not be shown on emded, has default value very long), orientation, size, step, scale`
 ## How To Run
 Config your `.env` file by changing `.env.bak` to `.env` and add `token/id`.
 Run ```yarn start``` or ```npm run start``` to start.\
