@@ -2,9 +2,11 @@ import { color, getImageResult } from './../utils/functions'
 import { config } from './../constant/config'
 import {
   ActionRowBuilder,
+  APIEmbed,
   ButtonBuilder,
   ButtonStyle,
   Interaction,
+  JSONEncodable,
 } from 'discord.js'
 import { BotEvent } from 'types'
 import fetch from 'node-fetch'
@@ -68,6 +70,9 @@ const event: BotEvent = {
 
       // console.log(embedbody)
       // console.log(embedbody.fields.find((f:any) => f.name === 'JSON'))
+
+      const newSeed = Math.floor(Math.random() * 2 ** 32 - 1)
+
       const payload = {
         ...JSON.parse(
           embedbody.fields.find((f: any) => f.name === 'JSON')!.value,
@@ -80,7 +85,7 @@ const event: BotEvent = {
           .replaceAll('```', '')
           ?.trim(),
         sampler: 'k_euler_ancestral',
-        seed: Math.floor(Math.random() * 2 ** 32 - 1),
+        seed: newSeed,
       }
       if (payload.uc === 'using default negative prompt') {
         payload.uc = config.default.negative
@@ -110,9 +115,29 @@ const event: BotEvent = {
       retry = new ActionRowBuilder<ButtonBuilder>().addComponents(
         enableRetryBtn,
       )
+
+      let newEmbed: (APIEmbed | JSONEncodable<APIEmbed>)
+
+      const configStr = interaction.message.embeds[0].fields.find(
+        f => f.name === 'Config',
+      )!.value
+
+      const seedKey = '**Seed:**'
+      const shorten = configStr.substring(configStr.indexOf(seedKey) + seedKey.length)
+      const oldSeed = shorten.substring(0, shorten.indexOf('\n')).trim()
+      newEmbed = JSON.parse(
+        JSON.stringify(interaction.message.embeds[0]).replace(
+          oldSeed,
+          `${newSeed}`,
+        ),
+      )
+
+      // console.log(newEmbed)
+
       interaction.editReply({
         content: 'need extreme segs',
         files: [...files],
+        embeds: [newEmbed],
         components: [retry],
       })
     } else {
