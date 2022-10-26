@@ -1,4 +1,13 @@
-import { AttachmentBuilder, EmbedBuilder } from 'discord.js'
+import {
+  ActionRowBuilder,
+  APIEmbed,
+  AttachmentBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  EmbedData,
+  JSONEncodable,
+} from 'discord.js'
 import {
   buildSlashCommand,
   getThemeColor,
@@ -50,12 +59,12 @@ const prompt: SlashCommand = {
       const randomSeed = Math.floor(Math.random() * 2 ** 32 - 1)
       const seed = interaction.options.getNumber('seed')
       let img2imgOptions: Img2imgOptions = {}
-      console.log(options)
+      // console.log(options)
 
       const savedSetting: SavedSetting = getJsonFileFromPath(
         './saved_setting.json',
       )
-      console.log(savedSetting)
+      // console.log(savedSetting)
 
       if (saveSetting) {
         console.log(color('operation', `......Saving setting`))
@@ -161,51 +170,7 @@ const prompt: SlashCommand = {
         }
       }
 
-      const embedMessage = {
-        // author: {
-        //   name: `Image Info`
-        // },
-        // URL: `https://localhost`,
-        name: `Image Info`,
-        description: `Prompt received.  ${
-          getSetting ? 'Using saved setting on slot ' + getSetting + '.' : ''
-        } ${fileAttachment ? 'Using img2img.' : ''} ${
-          saveSetting ? `Saved setting to slot ${saveSetting}.` : ''
-        }\nYour prompt is: \`\`\`${options.positivePrompt.replace(
-          config.default.positive,
-          '',
-        )} \`\`\` \nPlease wait for a moment...`,
-        color: 0xff9900,
-        fields: [
-          {
-            name: `config`,
-            value: `------------------------------------\n**Scale:** ${options.scale}　**Steps:** ${
-              options.steps
-            }　**Number:** ${sampleNumber || 1}${
-              fileAttachment
-                ? `　**Noise:** ${img2imgOptions.noise}　**Strength:** ${img2imgOptions.strength}`
-                : ''
-            }\n**Image Size:** ${
-              fileAttachment
-                ? img2imgOptions.width
-                : config.sizeMapper[options.orientation][options.size].width
-            }x${
-              fileAttachment
-                ? img2imgOptions.height
-                : config.sizeMapper[options.orientation][options.size].height
-            }　**Seed:** ${seed ? seed : randomSeed}\n------------------------------------\nPlease wait for a moment...`,
-          },
-        ],
-        footer: {
-          text: `©️SHINO369 | Need Extreme Segs`,
-        },
-      }
-
       if (settingExist) {
-        interaction.reply({
-          embeds: [embedMessage],
-        })
-
         console.log(color('operation', `......making payload`))
         const payload: Payload = {
           prompt: options.positivePrompt,
@@ -220,6 +185,86 @@ const prompt: SlashCommand = {
           uc: options.negativePrompt,
           ...img2imgOptions,
         }
+
+        const embedMessage: APIEmbed | JSONEncodable<APIEmbed> = {
+          author: {
+            name: `Prompt received. ${
+              getSetting
+                ? 'Using saved setting on slot ' + getSetting + '.'
+                : ''
+            } ${fileAttachment ? 'Using img2img.' : ''} ${
+              saveSetting ? `Saved setting to slot ${saveSetting}.` : ''
+            }\nPlease wait for the image(s) return...\n\nYour prompt is:`,
+          },
+          // URL: `https://localhost`,
+
+          description: `\`\`\`${options.positivePrompt.replace(
+            config.default.positive,
+            '',
+          )} \`\`\``,
+          color: 0xff9900,
+          fields: [
+            {
+              name: 'Negative Prompt',
+              value: `\`\`\`${options.negativePrompt.replace(config.default.negative, 'using default negative prompt')}\`\`\``
+            },
+            {
+              name: `Config`,
+              value: `------------------------------------\n**Scale:** ${
+                options.scale
+              }　**Steps:** ${
+                fileAttachment ? img2imgOptions.steps : options.steps
+              }　**Number:** ${sampleNumber || 1}${
+                fileAttachment
+                  ? `　**Noise:** ${img2imgOptions.noise}　**Strength:** ${img2imgOptions.strength}`
+                  : ''
+              }\n**Image Size:** ${
+                fileAttachment
+                  ? img2imgOptions.width
+                  : config.sizeMapper[options.orientation][options.size].width
+              }x${
+                fileAttachment
+                  ? img2imgOptions.height
+                  : config.sizeMapper[options.orientation][options.size].height
+              }　**Seed:** ${
+                seed ? seed : randomSeed
+              }\n------------------------------------\nPlease wait for a moment...`,
+            },
+            {
+              name: 'JSON',
+              value: JSON.stringify(
+                _.omit(payload, [
+                  'prompt',
+                  'uc',
+                  'ucPreset',
+                  'seed',
+                  'image',
+                  'sampler',
+                ]),
+              ),
+            },
+          ],
+          footer: {
+            text: `©️SHINO369 | Need Extreme Segs`,
+          },
+        }
+
+        if (fileAttachment) {
+          embedMessage.image = { url: fileAttachment.url }
+        }
+
+        const retryBtn = new ButtonBuilder()
+        .setCustomId('retry')
+        .setLabel('loading...')
+        .setStyle(ButtonStyle.Danger)
+        .setDisabled(true)
+
+        let retry = new ActionRowBuilder<ButtonBuilder>().addComponents(retryBtn)
+
+        interaction.reply({
+          embeds: [embedMessage],
+          components: [retry]
+        })
 
         if (payload.image) {
           console.log(_.omit(payload, ['image']))
@@ -273,10 +318,18 @@ const prompt: SlashCommand = {
               }
             })
 
+          retry = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+              .setCustomId('retry')
+              .setLabel('retry')
+              .setStyle(ButtonStyle.Primary),
+          )
+
           console.log(color('operation', `......sending image`))
           interaction.editReply({
             // embeds: [embedMessage, ...embedArr],
             files: [...fileArr],
+            components: [retry],
           })
         })
         //   // If you want to save to local

@@ -1,6 +1,16 @@
 import chalk from 'chalk'
-import { ApplicationCommandOptionType, SlashCommandBuilder } from 'discord.js'
-import { SlashCommandType } from '../types'
+import { config } from '../constant'
+import {
+  ApplicationCommandOptionType,
+  AttachmentBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js'
+import fetch from 'node-fetch'
+import { Payload, SlashCommandType } from 'types'
+import moment from 'moment'
 
 type colorType = 'text' | 'variable' | 'error' | 'operation'
 
@@ -8,7 +18,7 @@ const themeColors = {
   text: '#ff8e4d',
   variable: '#ff624d',
   error: '#f5426c',
-  operation: '#088F8F'
+  operation: '#088F8F',
 }
 
 export const getThemeColor = (color: colorType) =>
@@ -75,4 +85,58 @@ export const buildSlashCommand = (slashCommandObj: SlashCommandType) => {
 
   // console.log(slashCommand)
   return slashCommand
+}
+
+export const fetchImgToBase64 = async (url: string) => {
+  let img = ''
+  await fetch(url).then(async res => {
+    await res.buffer().then(bff => {
+      img = bff.toString('base64')
+    })
+  })
+  return img
+}
+
+export const getImageResult = async (payload: Payload) => {
+  const res = await fetch(process.env.BASE_URL + config.generateImageURL, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const data = await res.text()
+
+  const str = data.toString()
+
+  const splitArr = str.split('event: newImage')
+
+  let fileArr: AttachmentBuilder[] = []
+  // let embedArr: EmbedBuilder[] = []
+  splitArr
+    .map(arr => arr.trim())
+    .forEach(img => {
+      if (img.length > 0) {
+        const index = img.indexOf('data:')
+        const newStr = img.substring(index + 5)
+        const imgBuff = Buffer.from(newStr, 'base64')
+        const newDate = moment().format('YY-MM-DD-hh-mm-ss')
+        const ran = Math.random() * 10
+        const file = new AttachmentBuilder(imgBuff, {
+          name: `${newDate + ran}.png`,
+        })
+        // const exampleEmbed = new EmbedBuilder()
+        //   .setTitle(newDate)
+        //   .setImage('attachment://discordjs.png')
+        const newEmbed = new EmbedBuilder()
+        // .setTitle(`${newDate + ran}.png`)
+        // .setImage(`attachment://${newDate + ran}.png`) //.setURL(`https://localhost`);
+        fileArr.push(file)
+        // embedArr.push(newEmbed)
+      }
+    })
+
+  return fileArr
 }
