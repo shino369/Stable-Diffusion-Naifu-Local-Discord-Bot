@@ -27,7 +27,7 @@ Input options exactly the same as Naifu or NovelAI.\
 For img2img, it will automatically apply a suitable W x H, and max is 1024 x 1024.\
 
 ## Saving Slot
-Savable setting: `positive prompt, negative prompt (will not be shown on emded, has default value very long), orientation, size, step, scale`
+Savable setting: `positive prompt, negative prompt, orientation, size, step, scale`
 ## How To Run
 Config your `.env` file by changing `.env.bak` to `.env` and add `token/id`.
 Run ```yarn start``` or ```npm run start``` to start.\
@@ -37,3 +37,9 @@ You should also start the naifu in your local environment.\
 \
 <img src="./src/asset/image.jpg" alt="drawing" width="800"/>\
 <img src="./src/asset/image2.jpg" alt="drawing" width="800"/>
+
+## Image Regeneration
+Updated on 27 Oct 2022.\
+you can regenerate image using same setting except seed number by clicking `retry` button. Old images will be replaced. The JSON is for saving setting.\
+\
+<img src="./src/asset/image3.jpg" alt="drawing" width="800"/>
