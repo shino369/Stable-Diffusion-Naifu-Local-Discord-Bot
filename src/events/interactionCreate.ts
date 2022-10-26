@@ -102,6 +102,7 @@ const event: BotEvent = {
       const files = await getImageResult(payload)
       console.log(color('operation', `......sending image`))
       const enableRetryBtn = new ButtonBuilder()
+        .setCustomId('retry')
         .setLabel('retry')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(false)
